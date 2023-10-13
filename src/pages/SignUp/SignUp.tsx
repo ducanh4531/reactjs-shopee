@@ -66,19 +66,19 @@ const SignUp = () => {
           <div className='lg:col-span-2 lg:col-start-4'>
             <form className='p-10 rounded bg-white shadow-sm' onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className='text-2xl capitalize'>sign up</div>
-              <InputSpacer marginSize={8}>
-                <Input id='email' type='email' placeholder='Email' register={register} />
+              <InputSpacer className='mt-8'>
+                <Input name='email' type='email' placeholder='Email' register={register} />
                 <FormError errorMessage={errors.email?.message} />
               </InputSpacer>
 
-              <InputSpacer marginSize={2}>
-                <Input id='password' type='password' placeholder='Password' autoComplete='on' register={register} />
+              <InputSpacer className='mt-2'>
+                <Input name='password' type='password' placeholder='Password' autoComplete='on' register={register} />
                 <FormError errorMessage={errors.password?.message} />
               </InputSpacer>
 
-              <InputSpacer marginSize={2}>
+              <InputSpacer className='mt-2'>
                 <Input
-                  id='confirm_password'
+                  name='confirm_password'
                   type='password'
                   placeholder='Confirm Password'
                   autoComplete='on'
@@ -87,7 +87,7 @@ const SignUp = () => {
                 {<FormError errorMessage={errors.confirm_password?.message} />}
               </InputSpacer>
 
-              <InputSpacer marginSize={2}>
+              <InputSpacer className='mt-2'>
                 <Button
                   type='submit'
                   className='flex justify-center items-center w-full text-center py-4 px-2 bg-red-500 text-white text-sm hover:bg-red-600 uppercase'

@@ -1,7 +1,12 @@
 import { ReactNode } from 'react'
 
-const InputSpacer = ({ children, marginSize }: { children: ReactNode; marginSize: number }) => {
-  return <div className={`mt-${marginSize}`}>{children}</div>
+interface InputSpacerProps {
+  children: ReactNode
+  className: string
+}
+
+const InputSpacer = ({ children, className }: InputSpacerProps) => {
+  return <div className={className}>{children}</div>
 }
 
 export default InputSpacer

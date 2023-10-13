@@ -62,17 +62,17 @@ const Login = () => {
             <form className='p-10 rounded bg-white shadow-sm' onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className='text-2xl capitalize'>login</div>
 
-              <InputSpacer marginSize={8}>
-                <Input id='email' type='email' register={register} placeholder='Email' />
+              <InputSpacer className='mt-8'>
+                <Input name='email' type='email' register={register} placeholder='Email' />
                 <FormError errorMessage={errors.email?.message} />
               </InputSpacer>
 
-              <InputSpacer marginSize={3}>
-                <Input id='password' type='password' register={register} placeholder='Password' autoComplete='on' />
+              <InputSpacer className='mt-3'>
+                <Input name='password' type='password' register={register} placeholder='Password' autoComplete='on' />
                 <FormError errorMessage={errors.password?.message} />
               </InputSpacer>
 
-              <InputSpacer marginSize={3}>
+              <InputSpacer className='mt-3'>
                 <Button
                   type='submit'
                   className='flex justify-center items-center w-full text-center py-4 px-2 bg-red-500 text-white text-sm hover:bg-red-600 uppercase'
