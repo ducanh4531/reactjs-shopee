@@ -11,7 +11,14 @@ interface PopoverProps {
   placement?: Placement
 }
 
-const Popover = ({ renderPopover, children, className, as: Element = 'div', initialOpen, placement }: PopoverProps) => {
+const Popover = ({
+  renderPopover,
+  children,
+  className,
+  as: Element = 'div',
+  initialOpen,
+  placement = 'bottom-end'
+}: PopoverProps) => {
   const floatPortalId = useId()
   const arrowRef = useRef(null)
   const { refs, floatingStyles, context, middlewareData } = useFloating({
