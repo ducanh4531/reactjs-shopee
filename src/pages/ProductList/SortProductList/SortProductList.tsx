@@ -1,25 +1,88 @@
+import classNames from 'classnames'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { Button } from 'src/components/Button'
 import { InputSpacer } from 'src/components/Input'
 import { Popover } from 'src/components/Popover'
+import pagePath from 'src/constants/path'
+import { orderBy, sortBy } from 'src/constants/product'
+import { ProductsConfig } from 'src/types/Product.type'
+import { ProductsQuery } from '../ProductList'
 
-const SortProductList = () => {
+interface SortProductListProps {
+  pageSize: number
+  productsQuery: ProductsQuery
+}
+
+const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
+  const navigate = useNavigate()
+  const { sort_by = sortBy.createdAt } = productsQuery
+  const currentPage = Number(productsQuery.page)
+
+  const isActiveSortBy = (sortByValue: Exclude<ProductsConfig['sort_by'], undefined>) => {
+    return sort_by === sortByValue
+  }
+
+  const handleSort =
+    (sortByValue: Exclude<ProductsConfig['sort_by'], undefined>, orderValue?: ProductsConfig['order']) => () => {
+      const keysForDel = []
+
+      const params = createSearchParams({
+        ...productsQuery,
+        sort_by: sortByValue,
+        order: orderValue || ''
+      })
+
+      // remove keys if values are empty (order key)
+      for (const [key, value] of params) {
+        if (value === '') keysForDel.push(key)
+      }
+
+      keysForDel.forEach((key) => params.delete(key))
+
+      navigate({
+        pathname: pagePath.home,
+        search: params.toString()
+      })
+    }
+
   return (
     <div className='bg-gray-300/40 py-4 px-3'>
       <div className='flex flex-wrap justify-between items-center gap-2'>
         <div className='flex flex-wrap gap-4 items-center'>
           <div>Sort by</div>
           <InputSpacer className='flex justify-center items-center'>
-            <Button type='submit' className='rounded-sm py-2 px-4 bg-orange text-white capitalize text-sm'>
+            <Button
+              type='submit'
+              onClick={handleSort(sortBy.view)}
+              className={classNames('rounded-sm py-2 px-4 capitalize text-sm', {
+                'bg-orange text-white': isActiveSortBy(sortBy.view),
+                'bg-white': !isActiveSortBy(sortBy.view)
+              })}
+            >
               popular
             </Button>
           </InputSpacer>
           <InputSpacer className='flex justify-center items-center'>
-            <Button type='submit' className='rounded-sm py-2 px-4 bg-white capitalize text-sm'>
+            <Button
+              type='submit'
+              onClick={handleSort(sortBy.createdAt)}
+              className={classNames('rounded-sm py-2 px-4 capitalize text-sm', {
+                'bg-orange text-white': isActiveSortBy(sortBy.createdAt),
+                'bg-white': !isActiveSortBy(sortBy.createdAt)
+              })}
+            >
               latest
             </Button>
           </InputSpacer>
           <InputSpacer className='flex justify-center items-center'>
-            <Button type='submit' className='rounded-sm py-2 px-4 bg-white capitalize text-sm'>
+            <Button
+              type='submit'
+              onClick={handleSort(sortBy.sold)}
+              className={classNames('rounded-sm py-2 px-4 capitalize text-sm', {
+                'bg-orange text-white': isActiveSortBy(sortBy.sold),
+                'bg-white': !isActiveSortBy(sortBy.sold)
+              })}
+            >
               top sales
             </Button>
           </InputSpacer>
@@ -29,10 +92,16 @@ const SortProductList = () => {
               renderPopover={
                 <div className='bg-white relative shadow-md rounded-sm text-sm'>
                   <div className='flex flex-col w-40'>
-                    <button className='p-2.5 text-left hover:text-orange'>
+                    <button
+                      className='p-2.5 text-left hover:text-orange'
+                      onClick={handleSort(sortBy.price, orderBy.asc)}
+                    >
                       <span>Price: Low to High</span>
                     </button>
-                    <button className='p-2.5 text-left hover:text-orange'>
+                    <button
+                      className='p-2.5 text-left hover:text-orange'
+                      onClick={handleSort(sortBy.price, orderBy.desc)}
+                    >
                       <span>Price: High to Low</span>
                     </button>
                   </div>
@@ -52,37 +121,85 @@ const SortProductList = () => {
 
         <div className='flex items-center'>
           <div>
-            <span className='text-orange'>1</span>
-            <span>/2</span>
+            <span className='text-orange'>{currentPage}</span>
+            <span>/{pageSize}</span>
           </div>
           <div className='ml-2 flex justify-between'>
             <InputSpacer className='flex justify-center items-center'>
-              <Button className='rounded-tl-sm rounded-bl-sm p-2 shadow-sm bg-white/60 border-slate-300 border cursor-not-allowed'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth={1.5}
-                  stroke='currentColor'
-                  className='w-3 h-3'
+              {currentPage <= 1 ? (
+                <span className='rounded-tl-sm rounded-bl-sm p-2 shadow-sm bg-white/60 border-slate-300 border cursor-not-allowed'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='w-3 h-3'
+                  >
+                    <path strokeLinecap='round' strokeLinejoin='round' d='M15.75 19.5L8.25 12l7.5-7.5' />
+                  </svg>
+                </span>
+              ) : (
+                <Link
+                  to={{
+                    pathname: pagePath.home,
+                    search: createSearchParams({
+                      ...productsQuery,
+                      page: (currentPage - 1).toString()
+                    }).toString()
+                  }}
+                  className='rounded-tr-sm rounded-br-sm p-2 shadow-sm bg-gray-300/40 hover:bg-white border-slate-300 border'
                 >
-                  <path strokeLinecap='round' strokeLinejoin='round' d='M15.75 19.5L8.25 12l7.5-7.5' />
-                </svg>
-              </Button>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='w-3 h-3'
+                  >
+                    <path strokeLinecap='round' strokeLinejoin='round' d='M15.75 19.5L8.25 12l7.5-7.5' />
+                  </svg>
+                </Link>
+              )}
             </InputSpacer>
             <InputSpacer className='flex justify-center items-center'>
-              <Button className='rounded-tr-sm rounded-br-sm p-2 shadow-sm bg-gray-300/40 hover:bg-white border-slate-300 border'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth={1.5}
-                  stroke='currentColor'
-                  className='w-3 h-3'
+              {currentPage >= pageSize ? (
+                <span className='rounded-tl-sm rounded-bl-sm p-2 shadow-sm bg-white/60 border-slate-300 border cursor-not-allowed'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='w-3 h-3'
+                  >
+                    <path strokeLinecap='round' strokeLinejoin='round' d='M8.25 4.5l7.5 7.5-7.5 7.5' />
+                  </svg>
+                </span>
+              ) : (
+                <Link
+                  to={{
+                    pathname: pagePath.home,
+                    search: createSearchParams({
+                      ...productsQuery,
+                      page: (currentPage + 1).toString()
+                    }).toString()
+                  }}
+                  className='rounded-tr-sm rounded-br-sm p-2 shadow-sm bg-gray-300/40 hover:bg-white border-slate-300 border'
                 >
-                  <path strokeLinecap='round' strokeLinejoin='round' d='M8.25 4.5l7.5 7.5-7.5 7.5' />
-                </svg>
-              </Button>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='w-3 h-3'
+                  >
+                    <path strokeLinecap='round' strokeLinejoin='round' d='M8.25 4.5l7.5 7.5-7.5 7.5' />
+                  </svg>
+                </Link>
+              )}
             </InputSpacer>
           </div>
         </div>

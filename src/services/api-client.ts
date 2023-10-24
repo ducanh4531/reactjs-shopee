@@ -1,8 +1,8 @@
-import axios, { AxiosError, AxiosRequestConfig, HttpStatusCode } from 'axios'
+import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { toast } from 'react-toastify'
+import { HttpStatusCode } from 'src/constants/HttpStatusCode.enum'
 import pagePath from 'src/constants/path'
 import { AuthResponse } from 'src/types/AuthResponse.type'
-import { FetchSuccessResponse } from 'src/types/utils.type'
 import { getAccessToken, removeAccessTokenAndUser, setAccessToken, setUser } from 'src/utils/auth'
 
 const axiosInstance = axios.create({
@@ -20,8 +20,7 @@ class APIClient<T, P> {
     this.endpoint = endpoint
   }
 
-  getAll = (config?: AxiosRequestConfig) =>
-    axiosInstance.get<FetchSuccessResponse<T>>(this.endpoint, config).then((res) => res.data)
+  getAll = (config?: AxiosRequestConfig) => axiosInstance.get<T>(this.endpoint, config).then((res) => res.data)
 
   get = (id?: string | number) => axiosInstance.get<T>(`${this.endpoint}/${id}`).then((res) => res.data)
 
