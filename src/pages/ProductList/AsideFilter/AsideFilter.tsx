@@ -1,12 +1,89 @@
-import { Link } from 'react-router-dom'
+import { zodResolver } from '@hookform/resolvers/zod'
+import classNames from 'classnames'
+import { omit } from 'lodash'
+import { Controller, useForm } from 'react-hook-form'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { Button } from 'src/components/Button'
-import { Input, InputSpacer } from 'src/components/Input'
+import { FormError, InputSpacer } from 'src/components/Input'
+import { InputNumber } from 'src/components/InputNumber'
 import pagePath from 'src/constants/path'
+import useCategories from 'src/hooks/useCategories'
+import { priceRangeSchema } from 'src/utils/schemaRules'
+import z from 'zod'
+import { ProductsQuery } from '..'
+import { RatingStars } from './RatingStars'
 
-const AsideFilter = () => {
+type FormData = z.infer<typeof priceRangeSchema>
+
+interface AsideFilterProps {
+  productsQuery: ProductsQuery
+}
+
+const AsideFilter = ({ productsQuery }: AsideFilterProps) => {
+  const navigate = useNavigate()
+  const { data } = useCategories()
+  const { category } = productsQuery
+  const {
+    control,
+    handleSubmit,
+    trigger,
+    formState: { errors }
+  } = useForm<FormData>({
+    defaultValues: { price_min: '', price_max: '' },
+    resolver: zodResolver(priceRangeSchema),
+    shouldFocusError: false
+  })
+
+  const isActiveCategory = (categoryId: string) => {
+    return category === categoryId
+  }
+
+  const onSubmit = handleSubmit(
+    (data: FormData) => {
+      const keysForDel = []
+
+      const params = createSearchParams({
+        ...productsQuery,
+        price_min: data.price_min || '',
+        price_max: data.price_max || ''
+      })
+
+      // remove keys if values are empty (price_min or price_max)
+      for (const [key, value] of params) {
+        if (value === '') keysForDel.push(key)
+      }
+
+      keysForDel.forEach((key) => params.delete(key))
+
+      navigate({
+        pathname: pagePath.home,
+        search: params.toString()
+      })
+    },
+    (err) => {
+      // err.price_max?.ref?.focus && err.price_max?.ref?.focus()
+      // * OR
+      err.price_max?.ref?.focus?.()
+    }
+  )
+
+  const handleResetFilter = () => {
+    navigate({
+      pathname: pagePath.home,
+      search: createSearchParams(
+        omit(productsQuery, ['category', 'price_min', 'price_max', 'rating_filter'])
+      ).toString()
+    })
+  }
+
   return (
     <div className='py-4'>
-      <Link to={pagePath.home} className='flex items-center font-bold capitalize'>
+      <Link
+        to={pagePath.home}
+        className={classNames('flex items-center font-bold capitalize', {
+          'text-orange': !category
+        })}
+      >
         <svg viewBox='0 0 12 10' className='w-3 h-4 mr-3 fill-current'>
           <g fillRule='evenodd' stroke='none' strokeWidth={1}>
             <g transform='translate(-373 -208)'>
@@ -25,19 +102,31 @@ const AsideFilter = () => {
 
       <div className='bg-gray-300 h-[1px] my-4' />
       <ul>
-        <li className='py-2 pl-2'>
-          <Link to={pagePath.home} className='relative px-2 font-semibold text-orange capitalize'>
-            <svg viewBox='0 0 4 7' className='w-2 h-2 fill-orange absolute top-1.5 left-[-10px]'>
-              <polygon points='4 3.5 0 0 0 7' />
-            </svg>
-            computer & accessories
-          </Link>
-        </li>
-        <li className='py-2 pl-2'>
-          <Link to={pagePath.home} className='relative px-2 capitalize'>
-            desktop computers
-          </Link>
-        </li>
+        {data &&
+          data.data.map((category) => (
+            <li key={category._id} className='py-2 pl-2'>
+              <Link
+                to={{
+                  pathname: pagePath.home,
+                  search: createSearchParams({
+                    ...productsQuery,
+                    category: category._id
+                  }).toString()
+                }}
+                className={classNames('relative px-2 capitalize', {
+                  'text-orange font-semibold': isActiveCategory(category._id),
+                  'font-normal': !isActiveCategory(category._id)
+                })}
+              >
+                {isActiveCategory(category._id) && (
+                  <svg viewBox='0 0 4 7' className='w-2 h-2  absolute top-1.5 left-[-10px] fill-orange'>
+                    <polygon points='4 3.5 0 0 0 7' />
+                  </svg>
+                )}
+                {category.name}
+              </Link>
+            </li>
+          ))}
       </ul>
 
       <Link to={pagePath.home} className='flex items-center font-bold mt-4 uppercase'>
@@ -64,24 +153,47 @@ const AsideFilter = () => {
       <div className='bg-gray-300 h-[1px] my-4' />
       <div className='my-5 capitalize'>
         <div>price range</div>
-        <form className='mt-2'>
+        <form className='mt-2' onSubmit={onSubmit} noValidate>
           <div className='flex items-center'>
             <InputSpacer className='grow'>
-              <Input
-                type='text'
-                classNameInput='p-1 w-full rounded-sm outline-none border border-gray-300 focus:border-gray-500 focus:shadow-sm'
-                placeholder='₫ MIN'
+              <Controller
+                name='price_min'
+                control={control}
+                render={({ field }) => (
+                  <InputNumber
+                    {...field}
+                    onChange={async (event) => {
+                      field.onChange(event)
+                      await trigger('price_max')
+                    }}
+                    type='text'
+                    classNameInput='p-1 w-full rounded-sm outline-none border border-gray-300 focus:border-gray-500 focus:shadow-sm'
+                    placeholder='₫ MIN'
+                  />
+                )}
               />
             </InputSpacer>
             <div className='bg-gray-300 mx-2.5 h-[1px] shrink grow w-4' />
             <InputSpacer className='grow'>
-              <Input
-                type='text'
-                classNameInput='p-1 w-full rounded-sm outline-none border border-gray-300 focus:border-gray-500 focus:shadow-sm'
-                placeholder='₫ MAX'
+              <Controller
+                name='price_max'
+                control={control}
+                render={({ field }) => (
+                  <InputNumber
+                    {...field}
+                    onChange={async (event) => {
+                      field.onChange(event)
+                      await trigger('price_max')
+                    }}
+                    type='text'
+                    classNameInput='p-1 w-full rounded-sm outline-none border border-gray-300 focus:border-gray-500 focus:shadow-sm'
+                    placeholder='₫ MAX'
+                  />
+                )}
               />
             </InputSpacer>
           </div>
+          <FormError errorMessage={errors.price_max?.message} />
           <InputSpacer className='pt-3 flex justify-center items-center'>
             <Button type='submit' className='w-full p-2 uppercase bg-orange hover:bg-orange/80 text-sm text-white'>
               apply
@@ -93,81 +205,16 @@ const AsideFilter = () => {
       <div className='bg-gray-300 h-[1px] my-4' />
       <div className='capitalize'>
         <div>rating</div>
-        <ul className='my-3'>
-          <li className='pl-2 py-1'>
-            <Link to={pagePath.home} className='flex items-center text-sm'>
-              {Array(5)
-                .fill(0)
-                .map((_, index) => (
-                  <svg key={index} viewBox='0 0 9.5 8' className='w-4 h-4 mr-1'>
-                    <defs>
-                      <linearGradient id='ratingStarGradient' x1='50%' x2='50%' y1='0%' y2='100%'>
-                        <stop offset={0} stopColor='#ffca11' />
-                        <stop offset={1} stopColor='#ffad27' />
-                      </linearGradient>
-                      <polygon
-                        id='ratingStar'
-                        points='14.910357 6.35294118 12.4209136 7.66171903 12.896355 4.88968305 10.8823529 2.92651626 13.6656353 2.52208166 14.910357 0 16.1550787 2.52208166 18.9383611 2.92651626 16.924359 4.88968305 17.3998004 7.66171903'
-                      />
-                    </defs>
-                    <g fill='url(#ratingStarGradient)' fillRule='evenodd' stroke='none' strokeWidth={1}>
-                      <g transform='translate(-876 -1270)'>
-                        <g transform='translate(155 992)'>
-                          <g transform='translate(600 29)'>
-                            <g transform='translate(10 239)'>
-                              <g transform='translate(101 10)'>
-                                <use stroke='#ffa727' strokeWidth='.5' xlinkHref='#ratingStar' />
-                              </g>
-                            </g>
-                          </g>
-                        </g>
-                      </g>
-                    </g>
-                  </svg>
-                ))}
-              <span>& up</span>
-            </Link>
-          </li>
-          <li className='pl-2 py-1'>
-            <Link to={pagePath.home} className='flex items-center text-sm'>
-              {Array(5)
-                .fill(0)
-                .map((_, index) => (
-                  <svg key={index} viewBox='0 0 9.5 8' className='w-4 h-4 mr-1'>
-                    <defs>
-                      <linearGradient id='ratingStarGradient' x1='50%' x2='50%' y1='0%' y2='100%'>
-                        <stop offset={0} stopColor='#ffca11' />
-                        <stop offset={1} stopColor='#ffad27' />
-                      </linearGradient>
-                      <polygon
-                        id='ratingStar'
-                        points='14.910357 6.35294118 12.4209136 7.66171903 12.896355 4.88968305 10.8823529 2.92651626 13.6656353 2.52208166 14.910357 0 16.1550787 2.52208166 18.9383611 2.92651626 16.924359 4.88968305 17.3998004 7.66171903'
-                      />
-                    </defs>
-                    <g fill='url(#ratingStarGradient)' fillRule='evenodd' stroke='none' strokeWidth={1}>
-                      <g transform='translate(-876 -1270)'>
-                        <g transform='translate(155 992)'>
-                          <g transform='translate(600 29)'>
-                            <g transform='translate(10 239)'>
-                              <g transform='translate(101 10)'>
-                                <use stroke='#ffa727' strokeWidth='.5' xlinkHref='#ratingStar' />
-                              </g>
-                            </g>
-                          </g>
-                        </g>
-                      </g>
-                    </g>
-                  </svg>
-                ))}
-              <span>& up</span>
-            </Link>
-          </li>
-        </ul>
+        <RatingStars productsQuery={productsQuery} />
       </div>
 
       <div className='bg-gray-300 h-[1px] my-4' />
       <InputSpacer className='pt-3 flex justify-center items-center'>
-        <Button type='button' className='w-full p-2 uppercase bg-orange hover:bg-orange/80 text-sm text-white'>
+        <Button
+          type='button'
+          onClick={handleResetFilter}
+          className='w-full p-2 uppercase bg-orange hover:bg-orange/80 text-sm text-white'
+        >
           clear all
         </Button>
       </InputSpacer>

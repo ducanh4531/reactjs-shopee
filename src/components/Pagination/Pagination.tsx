@@ -1,5 +1,4 @@
 import classNames from 'classnames'
-import { isUndefined, omitBy } from 'lodash'
 import { Link, createSearchParams } from 'react-router-dom'
 import pagePath from 'src/constants/path'
 import { ProductsQuery } from 'src/pages/ProductList'
@@ -110,7 +109,7 @@ const Pagination = ({ pageSize, productsQuery }: PaginationProps) => {
           to={{
             pathname: pagePath.home,
             search: createSearchParams({
-              ...omitBy(productsQuery, isUndefined),
+              ...productsQuery,
               page: (currentPage + 1).toString()
             }).toString()
           }}

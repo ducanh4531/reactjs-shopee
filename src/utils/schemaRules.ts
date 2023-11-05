@@ -29,3 +29,24 @@ export const signUpSchema = logInSchema
       })
     }
   })
+
+const priceRangeIssue = (ctx: z.RefinementCtx) => {
+  ctx.addIssue({ code: 'custom', message: 'Please input valid price range', path: ['price_max'] })
+}
+
+export const priceRangeSchema = z
+  .object({
+    price_min: z.string(),
+    price_max: z.string()
+  })
+  .superRefine(({ price_min, price_max }, ctx) => {
+    if (price_min && price_max) {
+      if (Number(price_min) > Number(price_max)) {
+        priceRangeIssue(ctx)
+      }
+    } else if (!price_min && !price_max) {
+      priceRangeIssue(ctx)
+    }
+
+    return z.NEVER
+  })

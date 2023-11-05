@@ -36,7 +36,7 @@ const ProductList = () => {
       <div className='container'>
         <div className='grid grid-cols-12 gap-6'>
           <div className='col-span-3'>
-            <AsideFilter />
+            <AsideFilter productsQuery={productsQuery} />
           </div>
           <div className='col-span-9'>
             {data && (

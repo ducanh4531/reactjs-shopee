@@ -6,7 +6,8 @@ const pagePath = {
   profile: '/profile',
   products: '/products',
   purchase: '/purchase',
-  logout: '/logout'
+  logout: '/logout',
+  categories: '/categories'
 } as const
 
 export default pagePath
