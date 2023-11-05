@@ -1,6 +1,6 @@
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import pagePath from 'src/constants/path'
-import { ProductsQuery } from '../..'
+import { ProductsQuery } from '../../..'
 
 interface RatingStarsProps {
   productsQuery: ProductsQuery

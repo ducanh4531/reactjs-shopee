@@ -10,7 +10,7 @@ import pagePath from 'src/constants/path'
 import useCategories from 'src/hooks/useCategories'
 import { priceRangeSchema } from 'src/utils/schemaRules'
 import z from 'zod'
-import { ProductsQuery } from '..'
+import { ProductsQuery } from '../..'
 import { RatingStars } from './RatingStars'
 
 type FormData = z.infer<typeof priceRangeSchema>

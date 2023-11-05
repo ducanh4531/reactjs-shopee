@@ -6,7 +6,7 @@ import { Popover } from 'src/components/Popover'
 import pagePath from 'src/constants/path'
 import { orderBy, sortBy } from 'src/constants/product'
 import { ProductsConfig } from 'src/types/Product.type'
-import { ProductsQuery } from '../ProductList'
+import { ProductsQuery } from '../../ProductList'
 
 interface SortProductListProps {
   pageSize: number
