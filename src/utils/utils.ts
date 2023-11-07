@@ -16,3 +16,7 @@ export function formatToLocalizedValue(value: number) {
 export function formatToCompactValue(value: number) {
   return Intl.NumberFormat('en-US', { notation: 'compact' }).format(value).replace('.', ',').toLowerCase()
 }
+
+export function getSaleRate(originalPrice: number, discountPrice: number) {
+  return Math.round(((originalPrice - discountPrice) * 100) / originalPrice)
+}

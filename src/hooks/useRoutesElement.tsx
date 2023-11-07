@@ -5,6 +5,7 @@ import { AppContext } from 'src/contexts/app.context'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { SignUpLayout } from 'src/layouts/SignUpLayout'
 import { Login } from 'src/pages/Login'
+import { ProductDetail } from 'src/pages/ProductDetail'
 import { ProductList } from 'src/pages/ProductList'
 import { Profile } from 'src/pages/Profile'
 import { SignUp } from 'src/pages/SignUp'
@@ -46,6 +47,15 @@ const useRoutesElement = () => {
         }
       ]
     },
+    {
+      path: pagePath.productDetail,
+      element: (
+        <MainLayout>
+          <ProductDetail />
+        </MainLayout>
+      )
+    },
+
     {
       path: '',
       element: <RejectedRoute />,
