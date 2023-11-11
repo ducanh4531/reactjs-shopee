@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from 'src/components/Button'
 import { InputNumber } from 'src/components/InputNumber'
 import { ProductRating } from 'src/components/ProductRating'
@@ -10,6 +10,7 @@ import { formatToCompactValue, formatToLocalizedValue, getSaleRate } from 'src/u
 const ProductDetail = () => {
   const [imageIndexes, setImageIndexes] = useState([0, 5])
   const [currentImg, setCurrentImg] = useState('')
+  const imgRef = useRef<HTMLImageElement>(null)
   const { data } = useProduct()
   const product = data?.data
 
@@ -33,6 +34,51 @@ const ProductDetail = () => {
     if (imageIndexes[1] < (product as Product).images.length) setImageIndexes(imageIndexes.map((index) => index + 1))
   }
 
+  const handleZoom = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    // get the actual width/height of the div parent
+    const rect = e.currentTarget.getBoundingClientRect()
+
+    if (imgRef.current) {
+      const img = imgRef.current
+
+      // destructuring img to get its original width/height
+      const { naturalHeight, naturalWidth } = img
+      img.style.width = `${naturalWidth}px`
+      img.style.height = `${naturalHeight}px`
+      img.style.maxWidth = 'unset'
+
+      // const { offsetX, offsetY } = e.nativeEvent
+
+      // console.log('(e.nativeEvent.offset) x, y coordinates the mouse cursor, relative to the div', offsetX, offsetY)
+      // console.log('(e.page) x, y coordinates the mouse cursor, relative to the document (webpage)', e.pageX, e.pageY)
+      // console.log('(rect) x, y coordinates the div, relative to the viewport', rect.x, rect.y)
+      // console.log(
+      //   'the number of pixels the document has scrolled from the upper left corner of the window',
+      //   window.scrollX,
+      //   window.scrollY
+      // )
+
+      const offsetX = e.pageX - (rect.x + window.scrollX)
+      const offsetY = e.pageY - (rect.y + window.scrollY)
+
+      // console.log('1', 1 - naturalHeight / rect.height, 1 - naturalWidth / rect.width)
+      const top = offsetY * (1 - naturalHeight / rect.height)
+      const left = offsetX * (1 - naturalWidth / rect.width)
+
+      // console.log('y', top, 'x', left)
+      img.style.top = `${top}px`
+      img.style.left = `${left}px`
+    }
+  }
+
+  const handleLeave = () => {
+    if (imgRef.current) {
+      const img = imgRef.current
+
+      img.removeAttribute('style')
+    }
+  }
+
   if (!product) return null
 
   return (
@@ -41,15 +87,20 @@ const ProductDetail = () => {
         <div className='bg-white p-4 shadow'>
           <div className='grid grid-cols-12 gap-9'>
             <div className='col-span-5'>
-              <div className='relative w-full pt-[100%] shadow'>
+              <div
+                className='relative w-full cursor-zoom-in overflow-hidden pt-[100%] shadow'
+                onMouseMove={handleZoom}
+                onMouseLeave={handleLeave}
+              >
                 <img
                   src={currentImg}
                   alt={product.name}
-                  className='absolute left-0 top-0 h-full w-full bg-white object-cover'
+                  className='pointer-events-none absolute left-0 top-0 h-full w-full bg-white object-cover'
+                  ref={imgRef}
                 />
               </div>
               <div className='relative mt-4 grid grid-cols-5 gap-1'>
-                <button
+                <Button
                   className='absolute left-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'
                   onClick={handleBack}
                 >
@@ -63,7 +114,7 @@ const ProductDetail = () => {
                   >
                     <path strokeLinecap='round' strokeLinejoin='round' d='M15.75 19.5L8.25 12l7.5-7.5' />
                   </svg>
-                </button>
+                </Button>
                 {productImages.slice(0, 5).map((image) => {
                   const isActive = image === currentImg
                   return (
@@ -77,7 +128,7 @@ const ProductDetail = () => {
                     </div>
                   )
                 })}
-                <button
+                <Button
                   className='absolute right-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'
                   onClick={handleNext}
                 >
@@ -91,7 +142,7 @@ const ProductDetail = () => {
                   >
                     <path strokeLinecap='round' strokeLinejoin='round' d='M8.25 4.5l7.5 7.5-7.5 7.5' />
                   </svg>
-                </button>
+                </Button>
               </div>
             </div>
 
