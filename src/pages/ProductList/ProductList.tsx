@@ -3,8 +3,8 @@ import { Pagination } from 'src/components/Pagination'
 import useProducts from 'src/hooks/useProducts'
 import useQueryParams from 'src/hooks/useQueryParams'
 import { ProductsConfig } from 'src/types/Product.type'
-import { Product } from './components/Product'
 import { AsideFilter } from './components/AsideFilter'
+import { Product } from './components/Product'
 import { SortProductList } from './components/SortProductList'
 
 export type ProductsQuery = {
@@ -43,7 +43,7 @@ const ProductList = () => {
               <>
                 <SortProductList pageSize={data.data.pagination.page_size} productsQuery={productsQuery} />
 
-                <div className='mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3'>
+                <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
                   {data.data.products.map((product) => (
                     <div key={product._id} className='col-span-1'>
                       <Product product={product} />

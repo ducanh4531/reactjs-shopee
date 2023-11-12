@@ -5,7 +5,7 @@ const pagePath = {
   register: '/register',
   profile: '/profile',
   products: '/products',
-  productDetail: ':id',
+  productDetail: ':nameId',
   purchase: '/purchase',
   logout: '/logout',
   categories: '/categories'
