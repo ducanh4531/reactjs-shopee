@@ -150,7 +150,7 @@ const ProductDetail = () => {
               <h1 className='text-xl font-medium uppercase'>{product.name}</h1>
               <div className='mt-8 flex items-center'>
                 <div className='flex items-center'>
-                  <span className='mr-1 border-b border-b-orange text-orange'>{product.rating}</span>
+                  <span className='mr-1 border-b border-b-orange text-orange'>{product.rating.toFixed(1)}</span>
                   <ProductRating
                     productRating={product.rating}
                     activeClassname='h-4 w-4 fill-orange text-orange'
@@ -182,7 +182,7 @@ const ProductDetail = () => {
                   </Button>
                   <InputNumber
                     value={1}
-                    classNameInput='h-8 w-14 outline-none border border-gray-300 p-1 text-center outline-none'
+                    classNameInput='h-8 w-14 outline-none border border-gray-300 p-1 text-center'
                   />
                   <Button className='flex h-8 w-8 items-center justify-center rounded-r-sm border border-gray-300 text-gray-600'>
                     <svg enableBackground='new 0 0 10 10' viewBox='0 0 10 10' x={0} y={0} className='h-3 w-3'>

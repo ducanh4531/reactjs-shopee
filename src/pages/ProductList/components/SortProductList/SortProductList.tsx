@@ -5,8 +5,8 @@ import { InputSpacer } from 'src/components/Input'
 import { Popover } from 'src/components/Popover'
 import pagePath from 'src/constants/path'
 import { orderBy, sortBy } from 'src/constants/product'
+import { ProductsQuery } from 'src/hooks/useProductsQuery'
 import { ProductsConfig } from 'src/types/Product.type'
-import { ProductsQuery } from '../../ProductList'
 
 interface SortProductListProps {
   pageSize: number
@@ -53,15 +53,15 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
     }
 
   return (
-    <div className='bg-gray-300/40 py-4 px-3'>
-      <div className='flex flex-wrap justify-between items-center gap-2'>
-        <div className='flex flex-wrap gap-4 items-center'>
+    <div className='bg-gray-300/40 px-3 py-4'>
+      <div className='flex flex-wrap items-center justify-between gap-2'>
+        <div className='flex flex-wrap items-center gap-4'>
           <div>Sort by</div>
-          <InputSpacer className='flex justify-center items-center'>
+          <InputSpacer className='flex items-center justify-center'>
             <Button
               type='submit'
               onClick={handleSort(sortBy.view)}
-              className={classNames('rounded-sm py-2 px-4 capitalize text-sm', {
+              className={classNames('rounded-sm px-4 py-2 text-sm capitalize', {
                 'bg-orange text-white': isActiveSortBy(sortBy.view),
                 'bg-white': !isActiveSortBy(sortBy.view)
               })}
@@ -69,11 +69,11 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
               popular
             </Button>
           </InputSpacer>
-          <InputSpacer className='flex justify-center items-center'>
+          <InputSpacer className='flex items-center justify-center'>
             <Button
               type='submit'
               onClick={handleSort(sortBy.createdAt)}
-              className={classNames('rounded-sm py-2 px-4 capitalize text-sm', {
+              className={classNames('rounded-sm px-4 py-2 text-sm capitalize', {
                 'bg-orange text-white': isActiveSortBy(sortBy.createdAt),
                 'bg-white': !isActiveSortBy(sortBy.createdAt)
               })}
@@ -81,11 +81,11 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
               latest
             </Button>
           </InputSpacer>
-          <InputSpacer className='flex justify-center items-center'>
+          <InputSpacer className='flex items-center justify-center'>
             <Button
               type='submit'
               onClick={handleSort(sortBy.sold)}
-              className={classNames('rounded-sm py-2 px-4 capitalize text-sm', {
+              className={classNames('rounded-sm px-4 py-2 text-sm capitalize', {
                 'bg-orange text-white': isActiveSortBy(sortBy.sold),
                 'bg-white': !isActiveSortBy(sortBy.sold)
               })}
@@ -93,12 +93,12 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
               top sales
             </Button>
           </InputSpacer>
-          <InputSpacer className='rounded-sm flex justify-normal items-center cursor-pointer bg-white'>
+          <InputSpacer className='flex cursor-pointer items-center justify-normal rounded-sm bg-white'>
             <Popover
-              className='py-2 w-40 px-2.5 flex items-center justify-between'
+              className='flex w-40 items-center justify-between px-2.5 py-2'
               renderPopover={
-                <div className='bg-white relative shadow-md rounded-sm text-sm'>
-                  <div className='flex flex-col w-40'>
+                <div className='relative rounded-sm bg-white text-sm shadow-md'>
+                  <div className='flex w-40 flex-col'>
                     <button
                       className={classNames('p-2.5 text-left hover:text-orange', {
                         'text-orange': isActiveSortBy(sortBy.price, orderBy.asc)
@@ -119,7 +119,7 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
                 </div>
               }
             >
-              <span className={classNames('capitalize text-sm', { 'text-orange': order })}>
+              <span className={classNames('text-sm capitalize', { 'text-orange': order })}>
                 {order === orderBy.asc ? 'Price: Low to High' : order === orderBy.desc ? 'Price: High to Low' : 'price'}
               </span>
               <svg viewBox='0 0 10 6' className='h-3 w-3'>
@@ -138,16 +138,16 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
             <span>/{pageSize}</span>
           </div>
           <div className='ml-2 flex justify-between'>
-            <InputSpacer className='flex justify-center items-center'>
+            <InputSpacer className='flex items-center justify-center'>
               {currentPage <= 1 ? (
-                <span className='rounded-tl-sm rounded-bl-sm p-2 shadow-sm bg-white/60 border-slate-300 border cursor-not-allowed'>
+                <span className='cursor-not-allowed rounded-bl-sm rounded-tl-sm border border-slate-300 bg-white/60 p-2 shadow-sm'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
                     viewBox='0 0 24 24'
                     strokeWidth={1.5}
                     stroke='currentColor'
-                    className='w-3 h-3'
+                    className='h-3 w-3'
                   >
                     <path strokeLinecap='round' strokeLinejoin='round' d='M15.75 19.5L8.25 12l7.5-7.5' />
                   </svg>
@@ -161,7 +161,7 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
                       page: (currentPage - 1).toString()
                     }).toString()
                   }}
-                  className='rounded-tr-sm rounded-br-sm p-2 shadow-sm bg-gray-300/40 hover:bg-white border-slate-300 border'
+                  className='rounded-br-sm rounded-tr-sm border border-slate-300 bg-gray-300/40 p-2 shadow-sm hover:bg-white'
                 >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -169,23 +169,23 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
                     viewBox='0 0 24 24'
                     strokeWidth={1.5}
                     stroke='currentColor'
-                    className='w-3 h-3'
+                    className='h-3 w-3'
                   >
                     <path strokeLinecap='round' strokeLinejoin='round' d='M15.75 19.5L8.25 12l7.5-7.5' />
                   </svg>
                 </Link>
               )}
             </InputSpacer>
-            <InputSpacer className='flex justify-center items-center'>
+            <InputSpacer className='flex items-center justify-center'>
               {currentPage >= pageSize ? (
-                <span className='rounded-tl-sm rounded-bl-sm p-2 shadow-sm bg-white/60 border-slate-300 border cursor-not-allowed'>
+                <span className='cursor-not-allowed rounded-bl-sm rounded-tl-sm border border-slate-300 bg-white/60 p-2 shadow-sm'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
                     viewBox='0 0 24 24'
                     strokeWidth={1.5}
                     stroke='currentColor'
-                    className='w-3 h-3'
+                    className='h-3 w-3'
                   >
                     <path strokeLinecap='round' strokeLinejoin='round' d='M8.25 4.5l7.5 7.5-7.5 7.5' />
                   </svg>
@@ -199,7 +199,7 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
                       page: (currentPage + 1).toString()
                     }).toString()
                   }}
-                  className='rounded-tr-sm rounded-br-sm p-2 shadow-sm bg-gray-300/40 hover:bg-white border-slate-300 border'
+                  className='rounded-br-sm rounded-tr-sm border border-slate-300 bg-gray-300/40 p-2 shadow-sm hover:bg-white'
                 >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -207,7 +207,7 @@ const SortProductList = ({ pageSize, productsQuery }: SortProductListProps) => {
                     viewBox='0 0 24 24'
                     strokeWidth={1.5}
                     stroke='currentColor'
-                    className='w-3 h-3'
+                    className='h-3 w-3'
                   >
                     <path strokeLinecap='round' strokeLinejoin='round' d='M8.25 4.5l7.5 7.5-7.5 7.5' />
                   </svg>

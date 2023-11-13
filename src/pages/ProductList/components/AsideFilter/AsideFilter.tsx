@@ -8,9 +8,9 @@ import { FormError, InputSpacer } from 'src/components/Input'
 import { InputNumber } from 'src/components/InputNumber'
 import pagePath from 'src/constants/path'
 import useCategories from 'src/hooks/useCategories'
+import { ProductsQuery } from 'src/hooks/useProductsQuery'
 import { priceRangeSchema } from 'src/utils/schemaRules'
 import z from 'zod'
-import { ProductsQuery } from '../..'
 import { RatingStars } from './RatingStars'
 
 type FormData = z.infer<typeof priceRangeSchema>
@@ -84,7 +84,7 @@ const AsideFilter = ({ productsQuery }: AsideFilterProps) => {
           'text-orange': !category
         })}
       >
-        <svg viewBox='0 0 12 10' className='w-3 h-4 mr-3 fill-current'>
+        <svg viewBox='0 0 12 10' className='mr-3 h-4 w-3 fill-current'>
           <g fillRule='evenodd' stroke='none' strokeWidth={1}>
             <g transform='translate(-373 -208)'>
               <g transform='translate(155 191)'>
@@ -100,7 +100,7 @@ const AsideFilter = ({ productsQuery }: AsideFilterProps) => {
         all categories
       </Link>
 
-      <div className='bg-gray-300 h-[1px] my-4' />
+      <div className='my-4 h-[1px] bg-gray-300' />
       <ul>
         {data &&
           data.data.map((category) => (
@@ -114,12 +114,12 @@ const AsideFilter = ({ productsQuery }: AsideFilterProps) => {
                   }).toString()
                 }}
                 className={classNames('relative px-2 capitalize', {
-                  'text-orange font-semibold': isActiveCategory(category._id),
+                  'font-semibold text-orange': isActiveCategory(category._id),
                   'font-normal': !isActiveCategory(category._id)
                 })}
               >
                 {isActiveCategory(category._id) && (
-                  <svg viewBox='0 0 4 7' className='w-2 h-2  absolute top-1.5 left-[-10px] fill-orange'>
+                  <svg viewBox='0 0 4 7' className='absolute left-[-10px]  top-1.5 h-2 w-2 fill-orange'>
                     <polygon points='4 3.5 0 0 0 7' />
                   </svg>
                 )}
@@ -129,13 +129,13 @@ const AsideFilter = ({ productsQuery }: AsideFilterProps) => {
           ))}
       </ul>
 
-      <Link to={pagePath.home} className='flex items-center font-bold mt-4 uppercase'>
+      <Link to={pagePath.home} className='mt-4 flex items-center font-bold uppercase'>
         <svg
           enableBackground='new 0 0 15 15'
           viewBox='0 0 15 15'
           x={0}
           y={0}
-          className='w-3 h-4 mr-3 fill-current stroke-current'
+          className='mr-3 h-4 w-3 fill-current stroke-current'
         >
           <g>
             <polyline
@@ -150,7 +150,7 @@ const AsideFilter = ({ productsQuery }: AsideFilterProps) => {
         search filter
       </Link>
 
-      <div className='bg-gray-300 h-[1px] my-4' />
+      <div className='my-4 h-[1px] bg-gray-300' />
       <div className='my-5 capitalize'>
         <div>price range</div>
         <form className='mt-2' onSubmit={onSubmit} noValidate>
@@ -173,7 +173,7 @@ const AsideFilter = ({ productsQuery }: AsideFilterProps) => {
                 )}
               />
             </InputSpacer>
-            <div className='bg-gray-300 mx-2.5 h-[1px] shrink grow w-4' />
+            <div className='mx-2.5 h-[1px] w-4 shrink grow bg-gray-300' />
             <InputSpacer className='grow'>
               <Controller
                 name='price_max'
@@ -194,26 +194,26 @@ const AsideFilter = ({ productsQuery }: AsideFilterProps) => {
             </InputSpacer>
           </div>
           <FormError errorMessage={errors.price_max?.message} />
-          <InputSpacer className='pt-3 flex justify-center items-center'>
-            <Button type='submit' className='w-full p-2 uppercase bg-orange hover:bg-orange/80 text-sm text-white'>
+          <InputSpacer className='flex items-center justify-center pt-3'>
+            <Button type='submit' className='w-full bg-orange p-2 text-sm uppercase text-white hover:bg-orange/80'>
               apply
             </Button>
           </InputSpacer>
         </form>
       </div>
 
-      <div className='bg-gray-300 h-[1px] my-4' />
+      <div className='my-4 h-[1px] bg-gray-300' />
       <div className='capitalize'>
         <div>rating</div>
         <RatingStars productsQuery={productsQuery} />
       </div>
 
-      <div className='bg-gray-300 h-[1px] my-4' />
-      <InputSpacer className='pt-3 flex justify-center items-center'>
+      <div className='my-4 h-[1px] bg-gray-300' />
+      <InputSpacer className='flex items-center justify-center pt-3'>
         <Button
           type='button'
           onClick={handleResetFilter}
-          className='w-full p-2 uppercase bg-orange hover:bg-orange/80 text-sm text-white'
+          className='w-full bg-orange p-2 text-sm uppercase text-white hover:bg-orange/80'
         >
           clear all
         </Button>

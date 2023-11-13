@@ -1,6 +1,6 @@
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import pagePath from 'src/constants/path'
-import { ProductsQuery } from '../../..'
+import { ProductsQuery } from 'src/hooks/useProductsQuery'
 
 interface RatingStarsProps {
   productsQuery: ProductsQuery
@@ -27,9 +27,9 @@ const RatingStars = ({ productsQuery }: RatingStarsProps) => {
           .fill(0)
           .map((_, index) => {
             return (
-              <li className='pl-2 py-1' key={index}>
+              <li className='py-1 pl-2' key={index}>
                 <div
-                  className='flex items-center text-sm cursor-pointer'
+                  className='flex cursor-pointer items-center text-sm'
                   onClick={() => handleFilterStar(maxRate - index)}
                   tabIndex={0}
                   role='button'
@@ -40,7 +40,7 @@ const RatingStars = ({ productsQuery }: RatingStarsProps) => {
                     .map((_, indexStar) => {
                       if (indexStar < 5 - index) {
                         return (
-                          <svg key={indexStar} viewBox='0 0 9.5 8' className='w-4 h-4 mr-1'>
+                          <svg key={indexStar} viewBox='0 0 9.5 8' className='mr-1 h-4 w-4'>
                             <defs>
                               <linearGradient id='ratingStarGradient' x1='50%' x2='50%' y1='0%' y2='100%'>
                                 <stop offset={0} stopColor='#ffca11' />
@@ -68,7 +68,7 @@ const RatingStars = ({ productsQuery }: RatingStarsProps) => {
                         )
                       }
                       return (
-                        <svg key={indexStar} viewBox='0 0 30 30' className='w-4 h-4 mr-1'>
+                        <svg key={indexStar} viewBox='0 0 30 30' className='mr-1 h-4 w-4'>
                           <defs>
                             <linearGradient id='star__hollow' x1='50%' x2='50%' y1='0%' y2='99.0177926%'>
                               <stop offset='0%' stopColor='#FFD211' />

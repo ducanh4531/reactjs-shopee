@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { Link, createSearchParams } from 'react-router-dom'
 import pagePath from 'src/constants/path'
-import { ProductsQuery } from 'src/pages/ProductList'
+import { ProductsQuery } from 'src/hooks/useProductsQuery'
 
 interface PaginationProps {
   pageSize: number
@@ -23,7 +23,7 @@ const Pagination = ({ pageSize, productsQuery }: PaginationProps) => {
           page: pageNumber.toString()
         }).toString()
       }}
-      className='bg-white rounded px-3 py-2 mx-2 shadow-sm'
+      className='mx-2 rounded bg-white px-3 py-2 shadow-sm'
     >
       ...
     </Link>
@@ -67,7 +67,7 @@ const Pagination = ({ pageSize, productsQuery }: PaginationProps) => {
                 page: pageNumber.toString()
               }).toString()
             }}
-            className={classNames('bg-white rounded px-3 py-2 mx-2 shadow-sm border', {
+            className={classNames('mx-2 rounded border bg-white px-3 py-2 shadow-sm', {
               'border-cyan-500': pageNumber === currentPage,
               'border-transparent': pageNumber !== currentPage
             })}
@@ -79,9 +79,9 @@ const Pagination = ({ pageSize, productsQuery }: PaginationProps) => {
   }
 
   return (
-    <div className='flex flex-wrap mt-6 justify-center'>
+    <div className='mt-6 flex flex-wrap justify-center'>
       {currentPage === 1 ? (
-        <span className='bg-white/60 border-slate-300 rounded px-3 py-2 mx-2 shadow-sm border cursor-not-allowed'>
+        <span className='mx-2 cursor-not-allowed rounded border border-slate-300 bg-white/60 px-3 py-2 shadow-sm'>
           Prev
         </span>
       ) : (
@@ -93,7 +93,7 @@ const Pagination = ({ pageSize, productsQuery }: PaginationProps) => {
               page: (currentPage > pageSize ? pageSize : currentPage - 1).toString()
             }).toString()
           }}
-          className='bg-white rounded px-3 py-2 mx-2 shadow-sm'
+          className='mx-2 rounded bg-white px-3 py-2 shadow-sm'
         >
           Prev
         </Link>
@@ -101,7 +101,7 @@ const Pagination = ({ pageSize, productsQuery }: PaginationProps) => {
       {renderPagination()}
 
       {currentPage >= pageSize ? (
-        <span className='bg-white/60 border-slate-300 rounded px-3 py-2 mx-2 shadow-sm border  cursor-not-allowed'>
+        <span className='mx-2 cursor-not-allowed rounded border border-slate-300 bg-white/60 px-3 py-2  shadow-sm'>
           Next
         </span>
       ) : (
@@ -113,7 +113,7 @@ const Pagination = ({ pageSize, productsQuery }: PaginationProps) => {
               page: (currentPage + 1).toString()
             }).toString()
           }}
-          className='bg-white rounded px-3 py-2 mx-2 shadow-sm'
+          className='mx-2 rounded bg-white px-3 py-2 shadow-sm'
         >
           Next
         </Link>

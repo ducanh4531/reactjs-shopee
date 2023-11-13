@@ -1,1 +1,1 @@
-export { default as ProductList, type ProductsQuery } from './ProductList'
+export { default as ProductList } from './ProductList'

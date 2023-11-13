@@ -1,33 +1,12 @@
-import { isUndefined, omitBy } from 'lodash'
 import { Pagination } from 'src/components/Pagination'
 import useProducts from 'src/hooks/useProducts'
-import useQueryParams from 'src/hooks/useQueryParams'
-import { ProductsConfig } from 'src/types/Product.type'
+import useProductsQuery, { ProductsQuery } from 'src/hooks/useProductsQuery'
 import { AsideFilter } from './components/AsideFilter'
 import { Product } from './components/Product'
 import { SortProductList } from './components/SortProductList'
 
-export type ProductsQuery = {
-  [key in keyof ProductsConfig]: string
-}
-
 const ProductList = () => {
-  const queryParams = useQueryParams()
-  const productsQuery: ProductsQuery = omitBy(
-    {
-      page: queryParams.page && queryParams.page > 0 ? queryParams.page : '1',
-      limit: queryParams.limit || '3',
-      order: queryParams.order,
-      sort_by: queryParams.sort_by,
-      exclude: queryParams.exclude,
-      category: queryParams.category,
-      rating_filter: queryParams.rating_filter,
-      price_max: queryParams.price_max,
-      price_min: queryParams.price_min,
-      name: queryParams.name
-    },
-    isUndefined
-  )
+  const productsQuery: ProductsQuery = useProductsQuery()
 
   const { data } = useProducts(productsQuery)
 

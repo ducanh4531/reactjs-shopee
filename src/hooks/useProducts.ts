@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { ProductsQuery } from 'src/pages/ProductList'
 import productService from 'src/services/productService'
+import { ProductsQuery } from './useProductsQuery'
 
 const useProducts = (queryParams: ProductsQuery) => {
   return useQuery({

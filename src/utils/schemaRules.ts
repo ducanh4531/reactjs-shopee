@@ -50,3 +50,7 @@ export const priceRangeSchema = z
 
     return z.NEVER
   })
+
+export const searchTermSchema = z.object({
+  name: z.string().min(1).trim()
+})
