@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import ms from 'ms'
 import productService from 'src/services/productService'
 import { ProductsQuery } from './useProductsQuery'
 
@@ -9,7 +10,9 @@ const useProducts = (queryParams: ProductsQuery) => {
       productService.getAll({
         params: queryParams
       }),
-    keepPreviousData: true
+    keepPreviousData: true,
+    staleTime: ms('2h'),
+    enabled: Boolean(Object.keys(queryParams).length)
   })
 }
 

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ProductRating } from 'src/components/ProductRating'
+import pagePath from 'src/constants/path'
 import { Product as ProductType } from 'src/types/Product.type'
 import { formatToCompactValue, formatToLocalizedValue, generateNameId } from 'src/utils/utils'
 
@@ -11,8 +12,8 @@ const Product = ({ product }: ProductProps) => {
   const nameId = generateNameId({ name: product.name, id: product._id })
 
   return (
-    <Link to={nameId}>
-      <div className='overflow-hidden rounded-sm bg-white shadow transition-transform duration-100 hover:translate-y-[-0.04rem] hover:shadow-md'>
+    <Link to={`${pagePath.home}${nameId}`}>
+      <div className='overflow-hidden rounded-sm bg-white shadow transition-transform duration-100 hover:translate-y-[-0.1rem] hover:shadow-md'>
         <div className='relative w-full pt-[100%]'>
           <img
             src={product.image}

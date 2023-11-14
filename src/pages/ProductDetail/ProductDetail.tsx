@@ -4,8 +4,11 @@ import { Button } from 'src/components/Button'
 import { InputNumber } from 'src/components/InputNumber'
 import { ProductRating } from 'src/components/ProductRating'
 import useProduct from 'src/hooks/useProduct'
-import { Product } from 'src/types/Product.type'
+import useProducts from 'src/hooks/useProducts'
+import { ProductsQuery } from 'src/hooks/useProductsQuery'
+import { Product as ProductType } from 'src/types/Product.type'
 import { formatToCompactValue, formatToLocalizedValue, getSaleRate } from 'src/utils/utils'
+import { Product } from '../ProductList/components/Product'
 
 const ProductDetail = () => {
   const [imageIndexes, setImageIndexes] = useState([0, 5])
@@ -13,6 +16,9 @@ const ProductDetail = () => {
   const imgRef = useRef<HTMLImageElement>(null)
   const { data } = useProduct()
   const product = data?.data
+  const productsQuery: ProductsQuery = { page: '1', category: product?.category._id }
+  const { data: productsData } = useProducts(product ? productsQuery : {})
+  const products = productsData?.data.products
 
   useEffect(() => {
     if (product) {
@@ -31,7 +37,8 @@ const ProductDetail = () => {
   }
 
   const handleNext = () => {
-    if (imageIndexes[1] < (product as Product).images.length) setImageIndexes(imageIndexes.map((index) => index + 1))
+    if (imageIndexes[1] < (product as ProductType).images.length)
+      setImageIndexes(imageIndexes.map((index) => index + 1))
   }
 
   const handleZoom = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -243,6 +250,20 @@ const ProductDetail = () => {
           <div className='rounded bg-gray-50 p-4 text-lg uppercase text-slate-700'>product description</div>
           <div className='mx-4 mb-4 mt-12 text-sm leading-loose'>
             <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
+          </div>
+        </div>
+      </div>
+
+      <div className='container'>
+        <div className='mt-8'>
+          <p className='font-medium uppercase text-gray-400'>you may also like</p>
+          <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'>
+            {products &&
+              products.map((product) => (
+                <div key={product._id} className='col-span-1'>
+                  <Product product={product} />
+                </div>
+              ))}
           </div>
         </div>
       </div>
