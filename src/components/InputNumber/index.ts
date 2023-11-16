@@ -1,1 +1,1 @@
-export { default as InputNumber } from './InputNumber'
+export { default as InputNumber, type InputNumberProps } from './InputNumber'

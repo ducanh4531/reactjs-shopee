@@ -1,8 +1,8 @@
 import DOMPurify from 'dompurify'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from 'src/components/Button'
-import { InputNumber } from 'src/components/InputNumber'
 import { ProductRating } from 'src/components/ProductRating'
+import { QuantityController } from 'src/components/QuantityController'
 import useProduct from 'src/hooks/useProduct'
 import useProducts from 'src/hooks/useProducts'
 import { ProductsQuery } from 'src/hooks/useProductsQuery'
@@ -13,6 +13,7 @@ import { Product } from '../ProductList/components/Product'
 const ProductDetail = () => {
   const [imageIndexes, setImageIndexes] = useState([0, 5])
   const [currentImg, setCurrentImg] = useState('')
+  const [buyCount, setBuyCount] = useState<string | number>(1)
   const imgRef = useRef<HTMLImageElement>(null)
   const { data } = useProduct()
   const product = data?.data
@@ -84,6 +85,10 @@ const ProductDetail = () => {
 
       img.removeAttribute('style')
     }
+  }
+
+  const handleBuyCount = (value: number) => {
+    setBuyCount(!value ? '' : value)
   }
 
   if (!product) return null
@@ -181,22 +186,13 @@ const ProductDetail = () => {
               </div>
               <div className='mt-8 flex items-center'>
                 <div className='ml-10 capitalize text-gray-500'>quantity</div>
-                <div className='ml-8 flex items-center'>
-                  <Button className='flex h-8 w-8 items-center justify-center rounded-l-sm border border-gray-300 text-gray-600'>
-                    <svg enableBackground='new 0 0 10 10' viewBox='0 0 10 10' x={0} y={0} className='h-3 w-3'>
-                      <polygon points='4.5 4.5 3.5 4.5 0 4.5 0 5.5 3.5 5.5 4.5 5.5 10 5.5 10 4.5' />
-                    </svg>
-                  </Button>
-                  <InputNumber
-                    value={1}
-                    classNameInput='h-8 w-14 outline-none border border-gray-300 p-1 text-center'
-                  />
-                  <Button className='flex h-8 w-8 items-center justify-center rounded-r-sm border border-gray-300 text-gray-600'>
-                    <svg enableBackground='new 0 0 10 10' viewBox='0 0 10 10' x={0} y={0} className='h-3 w-3'>
-                      <polygon points='10 4.5 5.5 4.5 5.5 0 4.5 0 4.5 4.5 0 4.5 0 5.5 4.5 5.5 4.5 10 5.5 10 5.5 5.5 10 5.5' />
-                    </svg>
-                  </Button>
-                </div>
+                <QuantityController
+                  max={product.quantity}
+                  value={buyCount}
+                  onTyping={handleBuyCount}
+                  onDecrease={handleBuyCount}
+                  onIncrease={handleBuyCount}
+                />
                 <div className='ml-6 text-sm text-gray-500'>{product.quantity} pieces available</div>
               </div>
               <div className='mt-8 flex items-center'>
