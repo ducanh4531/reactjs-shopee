@@ -57,9 +57,9 @@ const Login = () => {
   return (
     <main className='bg-orange'>
       <div className='container'>
-        <div className='grid grid-cols-1 lg:grid-cols-5 py-12 lg:py-32 lg:pr-10'>
+        <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 lg:col-start-4'>
-            <form className='p-10 rounded bg-white shadow-sm' onSubmit={handleSubmit(onSubmit)} noValidate>
+            <form className='rounded bg-white p-10 shadow-sm' onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className='text-2xl capitalize'>login</div>
 
               <InputSpacer className='mt-8'>
@@ -75,7 +75,7 @@ const Login = () => {
               <InputSpacer className='mt-3'>
                 <Button
                   type='submit'
-                  className='flex justify-center items-center w-full text-center py-4 px-2 bg-red-500 text-white text-sm hover:bg-red-600 uppercase'
+                  className='flex w-full items-center justify-center bg-red-500 px-2 py-4 text-center text-sm uppercase text-white hover:bg-red-600'
                   isLoading={loginMutation.isLoading}
                   disabled={loginMutation.isLoading}
                 >
@@ -85,7 +85,7 @@ const Login = () => {
 
               <div className='mt-8 flex items-center justify-center'>
                 <span className='text-gray-400'>New to Shopee?</span>
-                <Link className='text-red-400 ml-1 capitalize' to={pagePath.signup}>
+                <Link className='ml-1 capitalize text-red-400' to={pagePath.signup}>
                   sign up
                 </Link>
               </div>

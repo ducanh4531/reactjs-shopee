@@ -6,7 +6,8 @@ const pagePath = {
   profile: '/profile',
   products: '/products',
   productDetail: ':nameId',
-  purchase: '/purchase',
+  purchases: '/purchases',
+  addToCart: '/add-to-cart',
   logout: '/logout',
   categories: '/categories'
 } as const

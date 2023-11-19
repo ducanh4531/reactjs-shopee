@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from 'src/components/Button'
 import { ProductRating } from 'src/components/ProductRating'
 import { QuantityController } from 'src/components/QuantityController'
+import useAddToCart from 'src/hooks/useAddToCart'
 import useProduct from 'src/hooks/useProduct'
 import useProducts from 'src/hooks/useProducts'
 import { ProductsQuery } from 'src/hooks/useProductsQuery'
@@ -20,6 +21,7 @@ const ProductDetail = () => {
   const productsQuery: ProductsQuery = { page: '1', category: product?.category._id }
   const { data: productsData } = useProducts(product ? productsQuery : {})
   const products = productsData?.data.products
+  const addToCartMutation = useAddToCart()
 
   useEffect(() => {
     if (product) {
@@ -92,6 +94,10 @@ const ProductDetail = () => {
   }
 
   if (!product) return null
+
+  const handleAddToCart = () => {
+    addToCartMutation.mutate({ product_id: product._id, buy_count: Number(buyCount) })
+  }
 
   return (
     <div className='bg-gray-200 py-6'>
@@ -196,7 +202,10 @@ const ProductDetail = () => {
                 <div className='ml-6 text-sm text-gray-500'>{product.quantity} pieces available</div>
               </div>
               <div className='mt-8 flex items-center'>
-                <Button className='flex h-12 items-center justify-center rounded-sm border border-orange bg-orange/10 px-5 capitalize text-orange shadow-sm hover:bg-orange/5'>
+                <Button
+                  className='flex h-12 items-center justify-center rounded-sm border border-orange bg-orange/10 px-5 capitalize text-orange shadow-sm hover:bg-orange/5'
+                  onClick={handleAddToCart}
+                >
                   <div className='flex items-center justify-center'>
                     <svg
                       enableBackground='new 0 0 15 15'

@@ -3,15 +3,20 @@ import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import noProducts from 'src/assets/images/no-products.png'
 import pagePath from 'src/constants/path'
 import { AppContext } from 'src/contexts/app.context'
 import useLogout from 'src/hooks/useLogout'
+import usePurchases from 'src/hooks/usePurchases'
 import { searchTermSchema } from 'src/utils/schemaRules'
+import { formatToLocalizedValue } from 'src/utils/utils'
 import { z } from 'zod'
 import { Input, InputSpacer } from '../Input'
 import { Popover } from '../Popover'
 
 type FormData = z.infer<typeof searchTermSchema>
+
+const PURCHASES_SHOWED = 5
 
 const Header = () => {
   const { isAuthenticated, profile } = useContext(AppContext)
@@ -21,6 +26,7 @@ const Header = () => {
     defaultValues: { name: '' },
     resolver: zodResolver(searchTermSchema)
   })
+  const { data: productsInBag } = usePurchases()
 
   const handleLogout = () => {
     logoutMutation.mutate()
@@ -93,7 +99,7 @@ const Header = () => {
                       <span>My Account</span>
                     </Link>
                     <Link
-                      to={pagePath.purchase}
+                      to={pagePath.purchases}
                       className='p-2.5 text-left font-medium hover:bg-gray-50 hover:text-teal-400'
                     >
                       <span>My Purchase</span>
@@ -170,115 +176,52 @@ const Header = () => {
             className='col-span-1 justify-self-center'
             renderPopover={
               <div className='relative max-w-[400px] rounded-sm bg-white text-sm shadow-md'>
-                <div className='p-2'>
-                  <div className='capitalize text-gray-400'>recently added products</div>
-                  <div className='mt-5'>
-                    <div className='mt-4 flex'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://down-vn.img.susercontent.com/file/sg-11134201-7rbmb-llvszmo6ni5ldc_tn'
-                          alt='item'
-                          className='h-11 w-11 object-cover'
-                        />
-                      </div>
-                      <div className='ml-2 flex-grow overflow-hidden'>
-                        <div className='truncate'>
-                          Sang Trọng Ốp Điện Thoại Silicone Cứng Chống Sốc Với Khung Kim Loại Từ Tính Cho iphone 13 14
-                          15 pro max plus
-                        </div>
-                      </div>
-                      <div className='ml-2 flex-shrink-0'>
-                        <span className='text-orange'>₫126.863</span>
-                      </div>
+                {productsInBag?.data.length ? (
+                  <div className='p-2'>
+                    <div className='capitalize text-gray-400'>recently added products</div>
+                    <div className='mt-5'>
+                      {productsInBag.data.slice(0, PURCHASES_SHOWED).map((product) => {
+                        return (
+                          <div className='mx-[-8px] mt-2 flex px-2 py-1 hover:bg-gray-100' key={product.product._id}>
+                            <div className='flex-shrink-0'>
+                              <img
+                                src={product.product.image}
+                                alt={product.product.name}
+                                className='h-11 w-11 object-cover'
+                              />
+                            </div>
+                            <div className='ml-2 flex-grow overflow-hidden'>
+                              <div className='truncate'>{product.product.name}</div>
+                            </div>
+                            <div className='ml-2 flex-shrink-0'>
+                              <span className='text-xs text-orange'>₫</span>
+                              <span className='text-orange'>{formatToLocalizedValue(product.price)}</span>
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
-
-                    <div className='mt-4 flex'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://down-vn.img.susercontent.com/file/sg-11134201-7rbmb-llvszmo6ni5ldc_tn'
-                          alt='item'
-                          className='h-11 w-11 object-cover'
-                        />
+                    <div className='mt-6 flex items-center justify-between'>
+                      <div className='text-xs capitalize text-gray-500'>
+                        {productsInBag.data.length > 5 && (
+                          <span>{productsInBag.data.length - PURCHASES_SHOWED} more products in cart</span>
+                        )}
                       </div>
-                      <div className='ml-2 flex-grow overflow-hidden'>
-                        <div className='truncate'>
-                          Sang Trọng Ốp Điện Thoại Silicone Cứng Chống Sốc Với Khung Kim Loại Từ Tính Cho iphone 13 14
-                          15 pro max plus
-                        </div>
-                      </div>
-                      <div className='ml-2 flex-shrink-0'>
-                        <span className='text-orange'>₫126.863</span>
-                      </div>
-                    </div>
-
-                    <div className='mt-4 flex'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://down-vn.img.susercontent.com/file/sg-11134201-7rbmb-llvszmo6ni5ldc_tn'
-                          alt='item'
-                          className='h-11 w-11 object-cover'
-                        />
-                      </div>
-                      <div className='ml-2 flex-grow overflow-hidden'>
-                        <div className='truncate'>
-                          Sang Trọng Ốp Điện Thoại Silicone Cứng Chống Sốc Với Khung Kim Loại Từ Tính Cho iphone 13 14
-                          15 pro max plus
-                        </div>
-                      </div>
-                      <div className='ml-2 flex-shrink-0'>
-                        <span className='text-orange'>₫126.863</span>
-                      </div>
-                    </div>
-
-                    <div className='mt-4 flex'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://down-vn.img.susercontent.com/file/sg-11134201-7rbmb-llvszmo6ni5ldc_tn'
-                          alt='item'
-                          className='h-11 w-11 object-cover'
-                        />
-                      </div>
-                      <div className='ml-2 flex-grow overflow-hidden'>
-                        <div className='truncate'>
-                          Sang Trọng Ốp Điện Thoại Silicone Cứng Chống Sốc Với Khung Kim Loại Từ Tính Cho iphone 13 14
-                          15 pro max plus
-                        </div>
-                      </div>
-                      <div className='ml-2 flex-shrink-0'>
-                        <span className='text-orange'>₫126.863</span>
-                      </div>
-                    </div>
-
-                    <div className='mt-4 flex'>
-                      <div className='flex-shrink-0'>
-                        <img
-                          src='https://down-vn.img.susercontent.com/file/sg-11134201-7rbmb-llvszmo6ni5ldc_tn'
-                          alt='item'
-                          className='h-11 w-11 object-cover'
-                        />
-                      </div>
-                      <div className='ml-2 flex-grow overflow-hidden'>
-                        <div className='truncate'>
-                          Sang Trọng Ốp Điện Thoại Silicone Cứng Chống Sốc Với Khung Kim Loại Từ Tính Cho iphone 13 14
-                          15 pro max plus
-                        </div>
-                      </div>
-                      <div className='ml-2 flex-shrink-0'>
-                        <span className='text-orange'>₫126.863</span>
-                      </div>
+                      <button className='rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90'>
+                        view my shopping cart
+                      </button>
                     </div>
                   </div>
-                  <div className='mt-6 flex items-center justify-between'>
-                    <div className='text-sm capitalize text-gray-500'>add to cart</div>
-                    <button className='rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90'>
-                      view my shopping cart
-                    </button>
+                ) : (
+                  <div className='flex h-[220px] w-[380px] flex-col items-center justify-center p-2'>
+                    <img src={noProducts} alt='no products yet' className='h-24 w-24' />
+                    <div className='mt-1 capitalize'>no products yet</div>
                   </div>
-                </div>
+                )}
               </div>
             }
           >
-            <Link to={pagePath.home}>
+            <Link to={pagePath.home} className='relative'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
@@ -293,6 +236,9 @@ const Header = () => {
                   d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z'
                 />
               </svg>
+              <span className='absolute right-[-10px] top-[-4px] rounded-xl bg-white px-2.5 py-0.5 text-xs text-orange'>
+                {productsInBag?.data.length}
+              </span>
             </Link>
           </Popover>
         </div>
