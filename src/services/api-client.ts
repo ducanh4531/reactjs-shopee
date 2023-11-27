@@ -62,7 +62,7 @@ axiosInstance.interceptors.response.use(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data: any | undefined = err.response?.data
       const message = data.message || err.message
-      toast.error(message)
+      toast.error(message, { position: 'bottom-right' })
     }
     return Promise.reject(err)
   }
