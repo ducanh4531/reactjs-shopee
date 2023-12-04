@@ -172,6 +172,16 @@ const AsideFilter = ({ productsQuery }: AsideFilterProps) => {
                   />
                 )}
               />
+              {/* <InputV2
+                name='price_min'
+                control={control}
+                onChange={async () => {
+                  await trigger('price_max')
+                }}
+                type='number'
+                classNameInput='p-1 w-full rounded-sm outline-none border border-gray-300 focus:border-gray-500 focus:shadow-sm'
+                placeholder='₫ MIN'
+              /> */}
             </InputSpacer>
             <div className='mx-2.5 h-[1px] w-4 shrink grow bg-gray-300' />
             <InputSpacer className='grow'>
