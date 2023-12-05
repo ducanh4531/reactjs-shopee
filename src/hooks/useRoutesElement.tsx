@@ -4,6 +4,7 @@ import pagePath from 'src/constants/path'
 import { AppContext } from 'src/contexts/app.context'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { SignUpLayout } from 'src/layouts/SignUpLayout'
+import { Cart } from 'src/pages/Cart'
 import { Login } from 'src/pages/Login'
 import { ProductDetail } from 'src/pages/ProductDetail'
 import { ProductList } from 'src/pages/ProductList'
@@ -42,6 +43,14 @@ const useRoutesElement = () => {
           element: (
             <MainLayout>
               <Profile />
+            </MainLayout>
+          )
+        },
+        {
+          path: pagePath.cart,
+          element: (
+            <MainLayout>
+              <Cart />
             </MainLayout>
           )
         }

@@ -25,6 +25,10 @@ class APIClient<T, P> {
   get = (id?: string | number) => axiosInstance.get<T>(`${this.endpoint}/${id}`).then((res) => res.data)
 
   post = (data?: P) => axiosInstance.post<T>(this.endpoint, data).then((res) => res.data)
+
+  put = (data?: P) => axiosInstance.put<T>(this.endpoint, data).then((res) => res.data)
+
+  delete = (idList: string[]) => axiosInstance.delete<T>(this.endpoint, { data: idList }).then((res) => res.data)
 }
 
 let access_token = getAccessToken()
