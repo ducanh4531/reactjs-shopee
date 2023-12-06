@@ -5,8 +5,7 @@ import { FetchSuccessResponse } from 'src/types/utils.type'
 
 const useUpdatePurchase = () => {
   return useMutation<FetchSuccessResponse<Purchases>, Error, { product_id: string; buy_count: number }>({
-    mutationFn: (body) => updatePurchaseService.put(body),
-    onSuccess: () => {}
+    mutationFn: (body) => updatePurchaseService.put(body)
   })
 }
 

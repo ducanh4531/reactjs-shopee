@@ -7,6 +7,7 @@ interface QuantityControllerProps extends InputNumberProps {
   onDecrease?: (value: number) => void
   onIncrease?: (value: number) => void
   onTyping?: (value: number) => void
+  onFocusOut?: (value: number) => void
   classNameWrapper?: string
 }
 
@@ -15,6 +16,7 @@ const QuantityController = ({
   onDecrease,
   onIncrease,
   onTyping,
+  onFocusOut,
   classNameWrapper = 'ml-8',
   value,
   ...rest
@@ -55,6 +57,10 @@ const QuantityController = ({
     setLocalValue(_value)
   }
 
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+    onFocusOut && onFocusOut(Number(event.target.value))
+  }
+
   return (
     <>
       <div className={`flex items-center ${classNameWrapper}`}>
@@ -69,6 +75,7 @@ const QuantityController = ({
         <InputNumber
           onChange={handleChange}
           value={value || localValue}
+          onBlur={handleBlur}
           classNameInput='h-8 w-14 outline-none border border-gray-300 p-1 text-center'
           {...rest}
         />

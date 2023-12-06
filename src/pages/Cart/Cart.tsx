@@ -1,4 +1,5 @@
 import { produce } from 'immer'
+import { keyBy } from 'lodash'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from 'src/components/Button'
@@ -6,6 +7,7 @@ import { Input } from 'src/components/Input'
 import { QuantityController } from 'src/components/QuantityController'
 import pagePath from 'src/constants/path'
 import usePurchases from 'src/hooks/usePurchases'
+import useUpdatePurchase from 'src/hooks/useUpdatePurchase'
 import { Purchases } from 'src/types/Purchases.type'
 import { formatToCompactValue, formatToLocalizedValue, generateNameId } from 'src/utils/utils'
 
@@ -16,12 +18,24 @@ interface ExtendPurchases extends Purchases {
 
 const Cart = () => {
   const [extendPurchases, setExtendPurchases] = useState<Array<ExtendPurchases>>([])
-  const { data: productsInBag } = usePurchases()
+  const { data: productsInBag, refetch } = usePurchases()
   const isAllChecked = extendPurchases.every((purchase) => purchase.checked)
+  const updatePurchaseMutation = useUpdatePurchase()
 
-  useEffect(() => {
-    setExtendPurchases(productsInBag?.data.map((purchase) => ({ ...purchase, checked: false, disabled: false })) || [])
-  }, [productsInBag])
+  useEffect(
+    () =>
+      setExtendPurchases((prev) => {
+        const extendPurchasesObject = keyBy(prev, '_id')
+        return (
+          productsInBag?.data.map((purchase) => ({
+            ...purchase,
+            checked: Boolean(extendPurchasesObject[purchase._id]?.checked),
+            disabled: false
+          })) || []
+        )
+      }),
+    [productsInBag]
+  )
 
   const handleSelectAll = () => {
     const newExtendPurchases = extendPurchases.map((purchase) => ({
@@ -37,6 +51,35 @@ const Cart = () => {
         draft[purchaseIndex].checked = event.target.checked
       })
     )
+  }
+
+  const handleTypingQuantity = (purchaseIndex: number) => (buyCount: number) => {
+    setExtendPurchases(
+      produce((draft) => {
+        draft[purchaseIndex].buy_count = buyCount
+      })
+    )
+  }
+
+  const handleQuantity = (purchaseIndex: number, buyCount: number, enable: boolean) => {
+    if (enable) {
+      const purchase = extendPurchases[purchaseIndex]
+
+      setExtendPurchases(
+        produce((draft) => {
+          draft[purchaseIndex].disabled = true
+        })
+      )
+
+      updatePurchaseMutation.mutate(
+        { product_id: purchase.product._id, buy_count: buyCount },
+        {
+          onSuccess: () => {
+            refetch()
+          }
+        }
+      )
+    }
   }
 
   return (
@@ -121,7 +164,20 @@ const Cart = () => {
                             <QuantityController
                               max={purchase.product.quantity}
                               value={purchase.buy_count}
+                              onIncrease={(value) => handleQuantity(index, value, value <= purchase.product.quantity)}
+                              onDecrease={(value) => handleQuantity(index, value, value > 1)}
+                              onTyping={handleTypingQuantity(index)}
+                              onFocusOut={(value) =>
+                                handleQuantity(
+                                  index,
+                                  value,
+                                  value >= 1 &&
+                                    value <= purchase.product.quantity &&
+                                    value !== productsInBag?.data[index].buy_count
+                                )
+                              }
                               classNameWrapper='flex items-center'
+                              disabled={purchase.disabled}
                             />
                           </div>
                           <div className='col-span-1'>
