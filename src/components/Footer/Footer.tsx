@@ -1,10 +1,10 @@
 const Footer = () => {
   return (
-    <footer className='py-16 bg-neutral-100'>
+    <footer className='bg-neutral-100 py-16'>
       <div className='container'>
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
           <div className='lg:col-span-1'>
-            <div>© 2023 Shopee. All Rights Reserved .</div>
+            <div>© 2023 Shopee. All Rights Reserved.</div>
           </div>
           <div className='lg:col-span-2'>
             <div>
@@ -13,7 +13,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className='text-center text-sm mt-10'>
+        <div className='mt-10 text-center text-sm'>
           <div>Shopee Company Limited</div>
           <div className='mt-2'>
             Floors 4-5-6, Capital Place Building, No. 29, Lieu Giai Street, Ngoc Khanh ward, Ba Dinh District, Hanoi,
